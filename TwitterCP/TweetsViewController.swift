@@ -18,6 +18,12 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        var iconView = UIImageView()
+        iconView.image = UIImage(named: "Twitter_Logo_Blue-1.png")
+        iconView.frame = CGRect(x: 0, y: 0, width: 40, height: 40)
+        iconView.contentMode = .scaleAspectFit
+        self.navigationItem.titleView = iconView
+        
         tableView.delegate = self
         tableView.dataSource = self
         tableView.rowHeight = UITableViewAutomaticDimension
@@ -79,11 +85,41 @@ class TweetsViewController: UIViewController, UITableViewDelegate, UITableViewDa
         self.refreshControl?.endRefreshing()
     }
     
-//    override func prepareForSegue(segue: UIStoryboardSegue, sender: AnyObject?) {
-//        // Get the new view controller using segue.destinationViewController.
-//        // Pass the selected object to the new view controller.
-//        
-//    }
+        
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        // Get the new view controller using segue.destinationViewController.
+        // Pass the selected object to the new view controller.
+        
+        if let cell = sender as? TweetCell {
+            let indexPath = tableView.indexPath(for: cell)
+            let tweet = tweets![indexPath!.row]
+            
+            let detailViewController = segue.destination as! TweetDetailsViewController
+            detailViewController.selectedTweet = tweet
+        }
+        
+        if let profilePic = sender as? UIButton {
+            if let superview = profilePic.superview {
+                if let cell = superview.superview as? TweetCell {
+                    let indexPath = tableView.indexPath(for: cell)
+                    
+                    let tweet = tweets![indexPath!.row]
+                    
+                    let profileViewController = segue.destination as! ProfileViewController
+                    profileViewController.owningUser = tweet.user
+                }
+            }
+        }
+
+        if let composeButton = sender as? UIBarButtonItem {
+            let currentUser = User.currentUser
+            
+            let composeViewController = segue.destination as! ComposeViewController
+            composeViewController.loggedInUser = currentUser
+        }
+
+        
+    }
 
 
 }

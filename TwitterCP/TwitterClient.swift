@@ -91,4 +91,13 @@ class TwitterClient: BDBOAuth1SessionManager {
         })
     }
     
+    func postTweet(tweetContent: String) {
+        post("https://api.twitter.com/1.1/statuses/update.json?status=\(tweetContent)", parameters: nil, progress: nil, success: { (operation: URLSessionDataTask, response: Any?) -> Void in
+            print("Tweet posted")
+        }) { (operation: URLSessionDataTask?, error: Error) -> Void in
+            print(error)
+            print("error posting tweet")
+        }
+    }
+    
 }
